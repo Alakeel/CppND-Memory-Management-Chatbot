@@ -17,11 +17,12 @@ ChatLogic::ChatLogic()
     //// STUDENT CODE
     ////
 
+    // this instance will be createed within the copy of sementics blew
     // create instance of chatbot
-    _chatBot = new ChatBot("../images/chatbot.png");
+    // _chatBot = new ChatBot("../images/chatbot.png");
 
     // add pointer to chatlogic so that chatbot answers can be passed on to the GUI
-    _chatBot->SetChatLogicHandle(this);
+    // _chatBot->SetChatLogicHandle(this);
 
     ////
     //// EOF STUDENT CODE
@@ -33,7 +34,7 @@ ChatLogic::~ChatLogic()
     ////
 
     // delete chatbot instance
-    delete _chatBot;
+    // delete _chatBot;
 
     // not needed since we're using smart pointer
     // delete all nodes
@@ -217,9 +218,13 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
         }
     }
 
+    // create a local ChatBot instance on the stack
+    ChatBot localChatBot ("../images/chatbot.png");
+    localChatBot.SetChatLogicHandle(this); //  helps to pass answers on GUI
     // add chatbot to graph root node
-    _chatBot->SetRootNode(rootNode);
-    rootNode->MoveChatbotHere(_chatBot);
+    localChatBot.SetRootNode(rootNode);
+    _chatBot = &localChatBot;
+    rootNode->MoveChatbotHere(std::move(localChatBot));
 
     ////
     //// EOF STUDENT CODE
